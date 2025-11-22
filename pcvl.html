@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Trợ Lý Truyền Thông</title>
+<link rel="icon" href="favicon.png" />
+<style>
+  * { box-sizing: border-box; }
+
+  body {
+    font-family: "Segoe UI", "Roboto", sans-serif;
+    margin: 0;
+    height: 100vh;
+    background: linear-gradient(135deg, #0077ff, #0148a6);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+  }
+  body.visible { opacity: 1; }
+
+  /* ========== Splash Intro ========== */
+  #splash {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(6px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    opacity: 1;
+    transition: opacity 0.8s ease;
+  }
+  #splash.fade-out { opacity: 0; pointer-events: none; }
+
+  .splash-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    animation: fadeIn 1.4s ease-in-out;
+  }
+  .splash-logo img {
+    width: 100px;
+    border-radius: 12px;
+  }
+  .spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top: 3px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  #splash p {
+    font-size: 13px;
+    font-style: italic;
+    opacity: 0.9;
+    margin-top: 15px;
+    animation: fadeIn 2s ease-in-out;
+  }
+  @keyframes fadeIn { from{opacity:0;transform:scale(0.85);} to{opacity:1;transform:scale(1);} }
+  @keyframes spin { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
+
+  /* ========== Header (logo - title - logout) ========== */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin: 20px auto 0 auto;
+    padding: 0 4vw 12px 4vw;
+    gap: 3vw;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+  }
+  .header-left img { height: 40px; border-radius: 10px; }
+  .header-center { text-align: center; flex: 0 1 600px; }
+  .header-center h2 {
+    font-weight: 700;
+    font-size: 18px;
+    margin: 0;
+    letter-spacing: 0.5px;
+  }
+  .header-center p {
+    font-size: 13px;
+    font-style: italic;
+    opacity: 0.9;
+    margin: 2px 0 0 0;
+  }
+  .header-right button {
+    background: rgba(255,255,255,0.15);
+    border: none;
+    color: white;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  .header-right button:hover { background: rgba(255,255,255,0.25); }
+
+  /* ========== Chat ========== */
+  #chat-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+  #chat-box {
+    width: 90%;
+    max-width: 800px;
+    flex: 1;
+    overflow-y: auto;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 10px;
+    margin: 18px 0 10px 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .msg-user, .msg-ai {
+    margin: 10px 0;
+    max-width: 80%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    line-height: 1.4;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+  }
+  .msg-user { background: #0080ff; align-self: flex-end; }
+  .msg-ai   { background: rgba(255,255,255,0.25); align-self: flex-start; }
+
+  /* ========== Input ========== */
+  #input-area {
+    width: 90%;
+    max-width: 800px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  #text-input {
+    flex: 1;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+  button.send {
+    background: #00b7ff;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  button.send:hover { background: #0198dd; }
+
+  /* ========== QR section ========== */
+  .qr-section { text-align: center; margin-bottom: 25px; }
+  .qr-box {
+    display: inline-block;
+    margin-top: 8px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 10px;
+    padding: 12px;
+  }
+  .qr-box img {
+    width: 150px;
+    height: 150px;
+    border-radius: 8px;
+    transition: transform 0.4s ease;
+  }
+  .qr-box img:hover { transform: scale(1.05); }
+  .qr-section p { font-size: 13px; opacity: 0.95; margin: 6px 0 0 0; }
+
+  @media (max-width: 800px) {
+    header { flex-direction: column; gap: 8px; padding-bottom: 8px; }
+    .header-left img { height: 40px; }
+    .header-center h2 { font-size: 16px; }
+    .header-center p { font-size: 13px; }
+  }
+</style>
+</head>
+
+<body>
+
+<!-- 🔹 Splash Intro -->
+<div id="splash">
+  <div class="splash-logo">
+    <img src="evn_logo.jpg" alt="EVN Logo">
+    <div class="spinner"></div>
+  </div>
+  <p>🔹Vui lòng chờ trợ lý khởi động...</p>
+</div>
+
+<!-- 🔹 Header -->
+<header>
+  <div class="header-left">
+    <img src="evn_logo.jpg" alt="EVN Logo" />
+  </div>
+  <div class="header-center">
+    <h2>TRỢ LÝ TRUYỀN THÔNG</h2>
+    <p>⚡Tiết kiệm điện. ⚡Thanh toán tiền điện. ⚡An toàn điện.</p>
+  </div>
+  <div class="header-right">
+    <button onclick="logout()">↩️Đăng xuất</button>
+  </div>
+</header>
+
+<!-- 🔹 Chat wrapper -->
+<div id="chat-wrapper">
+  <div id="chat-box"></div>
+
+  <div id="input-area">
+    <input type="text" id="text-input" placeholder="Nhập câu hỏi..." />
+    <button class="send" onclick="sendMsg()">Gửi</button>
+  </div>
+
+  <!-- 🔹 QR Section -->
+  <div class="qr-section">
+    <p>📱Quét mã truy cập nhanh Trợ lý truyền thông</p>
+    <div class="qr-box">
+      <img src="qr_pcvl.png" alt="QR Code PCVL" />
+    </div>
+  </div>
+</div>
+
+<script>
+  // ========== Splash & Fade-In ==========
+  window.addEventListener("load", () => {
+    const splash = document.getElementById("splash");
+    const body = document.body;
+    setTimeout(() => {
+      splash.classList.add("fade-out");
+      body.classList.add("visible");
+    }, 2200);
+  });
+
+  // ========== Chat logic ==========
+  const chatBox = document.getElementById("chat-box");
+  const input = document.getElementById("text-input");
+
+  function appendMsg(text, sender) {
+    const div = document.createElement("div");
+    div.className = sender === "user" ? "msg-user" : "msg-ai";
+    div.textContent = text;
+    chatBox.appendChild(div);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  async function sendMsg() {
+    const text = input.value.trim();
+    if (!text) return;
+    appendMsg(text, "user");
+    input.value = "";
+    appendMsg("...", "ai");
+    try {
+      const r = await fetch("/api/chat", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          messages: [
+            { role: "system", content: "You are PCVL Truyền thông Assistant" },
+            { role: "user", content: text }
+          ]
+        }),
+      });
+      const data = await r.json();
+      document.querySelector(".msg-ai:last-child").textContent =
+        data.choices?.[0]?.message?.content || "Không nhận được phản hồi.";
+    } catch {
+      document.querySelector(".msg-ai:last-child").textContent = "Lỗi kết nối API.";
+    }
+  }
+
+  function logout() { window.location.href = "logout.html"; }
+  input.addEventListener("keypress", e => { if (e.key === "Enter") sendMsg(); });
+</script>
+</body>
+</html>
