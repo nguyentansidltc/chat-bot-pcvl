@@ -251,7 +251,7 @@
     appendMsg("...", "ai");
 
     try {
-      const r = await fetch("/api/chat", {
+      const r = await fetch("https://chat-bot-pcvl.vercel.app/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -288,3 +288,4 @@
 
 </body>
 </html>
+
