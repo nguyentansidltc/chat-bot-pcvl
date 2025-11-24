@@ -14,10 +14,14 @@ export default async function handler(req) {
     const userMessages = body.messages || [];
 
     const systemPrompt = `
-Bạn là Trợ lý Truyền Thông của Công ty Điện lực Vĩnh Long (PCVL).
-...
-${knowledge.map(x => `Hỏi: ${x.q}\nĐáp: ${x.a}`).join("\n\n")}
-`;
+      Quy tắc:
+      1) Ưu tiên dùng dữ liệu trong bộ Q&A.
+      2) Nếu không có câu trả lời phù hợp, hãy phản hồi:
+      "Nội dung này nằm ngoài phạm vi tư vấn của Trợ lý Truyền thông.
+      Vui lòng truy cập www.pcvinhlong.evnspc.vn hoặc gọi 19001006 – 19009000."
+      Dữ liệu Q&A:
+      ${knowledge.map(x => `Hỏi: ${x.q}\nĐáp: ${x.a}`).join("\n\n")}
+      `;
 
     const r = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
