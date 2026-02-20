@@ -727,6 +727,6 @@ export const knowledge = [
    =========================== */
 { 
   q:"Xin lỗi! Thông tin Bạn yêu cầu không nằm trong phạm vi hỗ trợ.", 
-  a:"Bạn vui lòng truy cập website: www.pcvinhlong.evnspc.vn hoặc ứng dụng CSKH EVN hoặc Tổng đài CSKH: 19001006 - 19009000 để được hỗ trợ thêm!" 
+  a:"Bạn vui lòng truy cập website: www.pcvinhlong.evnspc.vn hoặc ứng dụng CSKH EVN hoặc Hotline EVN: 1558 để được hỗ trợ thêm!" 
 }
 ];
